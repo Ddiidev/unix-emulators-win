@@ -104,10 +104,14 @@ jobs:
             'findd', 'pwd', 'which', 'head', 'tail', 'sort', 'uniq', 'xargs'
           )
           foreach ($name in $names) {
-            $src = Join-Path $PWD "$name.exe"
-            if (Test-Path $src) {
-              Copy-Item $src $dist
-              Write-Host "Collected $name.exe"
+            # Try current dir first, then parent dirs (build.bat compiles to ../../)
+            $src = Get-ChildItem -Path $PWD -Filter "$name.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+            if (-not $src) {
+              $src = Get-ChildItem -Path (Join-Path $PWD '..') -Filter "$name.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+            }
+            if ($src) {
+              Copy-Item $src.FullName $dist
+              Write-Host "Collected $name.exe from $($src.FullName)"
             } else {
               Write-Warning "$name.exe not found — skipping"
             }
