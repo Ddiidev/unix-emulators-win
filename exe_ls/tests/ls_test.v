@@ -2,7 +2,7 @@ module tests
 
 import os
 
-const exe_path = os.join_path('c:', 'Users', 'andre', 'bin', 'ls.exe')
+const exe_path = os.join_path(os.dir(@FILE), '..', '..', '..', 'ls.exe')
 
 fn test_ls_basic() {
 	res := os.execute('${exe_path} .')

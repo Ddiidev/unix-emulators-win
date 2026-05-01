@@ -2,7 +2,7 @@ module tests
 
 import os
 
-const exe_path = os.join_path('c:', 'Users', 'andre', 'bin', 'rm.exe')
+const exe_path = os.join_path(os.dir(@FILE), '..', '..', '..', 'rm.exe')
 
 fn test_rm_file() {
 	os.write_file('temp.txt', 'test') or { }

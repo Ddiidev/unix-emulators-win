@@ -2,7 +2,7 @@ module tests
 
 import os
 
-const exe_path = os.join_path('c:', 'Users', 'andre', 'bin', 'uniq.exe')
+const exe_path = os.join_path(os.dir(@FILE), '..', '..', '..', 'uniq.exe')
 
 fn test_uniq_basic() {
 	os.write_file('temp.txt', 'a\na\nb\nc\nc\nc') or { }

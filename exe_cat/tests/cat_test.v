@@ -2,7 +2,7 @@ module tests
 
 import os
 
-const exe_path = os.join_path('c:', 'Users', 'andre', 'bin', 'cat.exe')
+const exe_path = os.join_path(os.dir(@FILE), '..', '..', '..', 'cat.exe')
 const test_file = 'test_cat_data.txt'
 
 fn test_setup() {

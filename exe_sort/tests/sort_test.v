@@ -2,7 +2,7 @@ module tests
 
 import os
 
-const exe_path = os.join_path('c:', 'Users', 'andre', 'bin', 'sort.exe')
+const exe_path = os.join_path(os.dir(@FILE), '..', '..', '..', 'sort.exe')
 
 fn test_sort_basic() {
 	os.write_file('temp.txt', 'c\na\nb') or { }

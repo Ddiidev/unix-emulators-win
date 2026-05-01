@@ -2,7 +2,7 @@ module tests
 
 import os
 
-const exe_path = os.join_path('c:', 'Users', 'andre', 'bin', 'tail.exe')
+const exe_path = os.join_path(os.dir(@FILE), '..', '..', '..', 'tail.exe')
 const test_file = 'tail_seekend_test.txt'
 
 fn test_setup() {

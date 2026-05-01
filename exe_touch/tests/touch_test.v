@@ -3,7 +3,7 @@ module tests
 import os
 import time
 
-const exe_path = os.join_path('c:', 'Users', 'andre', 'bin', 'touch.exe')
+const exe_path = os.join_path(os.dir(@FILE), '..', '..', '..', 'touch.exe')
 
 fn test_touch_create() {
 	os.rm('new_file.txt') or { }

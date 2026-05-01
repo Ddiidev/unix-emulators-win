@@ -2,7 +2,7 @@ module tests
 
 import os
 
-const exe_path = os.join_path('c:', 'Users', 'andre', 'bin', 'grep.exe')
+const exe_path = os.join_path(os.dir(@FILE), '..', '..', '..', 'grep.exe')
 
 fn test_setup() {
 	os.write_file('ringbuf_test.txt', 'line 1\nline 2\nline 3\ntarget match\nline 5\nline 6') or { }

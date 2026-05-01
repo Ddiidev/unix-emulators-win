@@ -2,7 +2,7 @@ module tests
 
 import os
 
-const exe_path = os.join_path('c:', 'Users', 'andre', 'bin', 'head.exe')
+const exe_path = os.join_path(os.dir(@FILE), '..', '..', '..', 'head.exe')
 
 fn test_setup() {
 	os.write_file('head_test1.txt', '1') or { }

@@ -3,9 +3,7 @@
 This directory contains implementations of standard UNIX utilities written in the [V programming language](https://vlang.io/).
 
 ## Purpose
-The primary purpose is to provide these executables for [rtk](https://github.com/rtk-ai/rtk/), an AI proxy that bridges UNIX shell commands to Windows. Because Windows lacks native commands like `ls`, and aliases or PowerShell emulations are often insufficient for external programs calling standard executables, these standalone binaries bridge that gap.
-
-See [AGENTS_SUGGESTION_FOR_RTK.md](AGENTS_SUGGESTION_FOR_RTK.md) for the recommended agent prompt template that enforces efficient use of these tools through rtk.
+These executables are written in [V](https://vlang.io/) for [rtk](https://github.com/rtk-ai/rtk/), an AI proxy that bridges UNIX shell commands to Windows. See [README.md](README.md) for the full motivation and [AGENTS_SUGGESTION_FOR_RTK.md](AGENTS_SUGGESTION_FOR_RTK.md) for the recommended agent system prompt.
 
 ## Structure
 By convention, each executable's source code is placed in its own folder named `exe_<command>` (e.g., `exe_ls`). 
@@ -18,7 +16,7 @@ Each folder contains an integration test suite in the `tests/` directory, which 
 - Run `v test tests/` in the executable's source directory after every change to confirm nothing is broken.
 
 ## Deployment
-Binaries are compiled and installed into `c:\Users\andre\bin\`, which should be added to the Windows `PATH`.
+Binaries are compiled into the project root (`../../<tool>.exe` relative to each `exe_<tool>` directory). Add this directory to your Windows `PATH`.
 
 ## List of implemented executables (16 tools)
 All tools return POSIX-compliant exit codes and are verified via integration tests.

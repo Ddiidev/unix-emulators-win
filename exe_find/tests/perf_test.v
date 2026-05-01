@@ -2,7 +2,7 @@ module tests
 
 import os
 
-const exe_path = os.join_path('c:', 'Users', 'andre', 'bin', 'findd.exe')
+const exe_path = os.join_path(os.dir(@FILE), '..', '..', '..', 'findd.exe')
 
 fn test_setup() {
 	os.mkdir('find_perf_test_dir') or { }

@@ -2,7 +2,7 @@ module tests
 
 import os
 
-const exe_path = os.join_path('c:', 'Users', 'andre', 'bin', 'grep.exe')
+const exe_path = os.join_path(os.dir(@FILE), '..', '..', '..', 'grep.exe')
 
 fn test_setup() {
 	os.mkdir('grep_newflags_dir') or { }

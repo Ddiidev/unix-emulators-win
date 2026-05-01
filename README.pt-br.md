@@ -44,6 +44,8 @@ rtk grep -n "padrão" caminho | rtk head -n 80
 rtk findd ./src -name "*.ts" | xargs grep "TODO" | rtk head -n 200
 ```
 
+**Para aproveitar ao máximo**, use o system prompt disponível em **[AGENTS_SUGGESTION_FOR_RTK.md](AGENTS_SUGGESTION_FOR_RTK.md)**. Ele impõe wrappers `rtk` obrigatórios, proíbe cmdlets verbosos do PowerShell e exclui automaticamente diretórios binários/de dependências — tudo pensado para minimizar o desperdício de tokens.
+
 Os binários:
 
 1. **Funcionam como executáveis reais** — podem ser chamados de qualquer shell, script ou ferramenta externa (ex: `rtk`, agentes de IA como Codex/Gemini)
@@ -74,7 +76,7 @@ cd executables\exe_ls
 .\build.bat
 ```
 
-Os binários são instalados em `c:\Users\andre\bin\`, que deve estar no seu `PATH`.
+Os binários são compilados para a raiz do projeto (dois níveis acima de cada diretório `exe_<ferramenta>`). Coloque-os em um diretório no seu `PATH`.
 
 ### Primeiro Uso
 ```powershell

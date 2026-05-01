@@ -2,7 +2,7 @@ module tests
 
 import os
 
-const exe_path = os.join_path('c:', 'Users', 'andre', 'bin', 'grep.exe')
+const exe_path = os.join_path(os.dir(@FILE), '..', '..', '..', 'grep.exe')
 const test_root = 'test_grep_autoexclude'
 
 fn test_setup() {

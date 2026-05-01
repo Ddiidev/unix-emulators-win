@@ -44,6 +44,8 @@ rtk grep -n "pattern" path | rtk head -n 80
 rtk findd ./src -name "*.ts" | xargs grep "TODO" | rtk head -n 200
 ```
 
+**To get the most out of this setup**, use the agent system prompt provided in **[AGENTS_SUGGESTION_FOR_RTK.md](AGENTS_SUGGESTION_FOR_RTK.md)**. It enforces mandatory `rtk` wrappers, forbids verbose PowerShell cmdlets, and auto-excludes binary/dependency directories — all designed to minimize token waste.
+
 The binaries:
 
 1. **Work as real executables** — callable from any shell, script, or external tool (e.g., `rtk`, AI agents like Codex/Gemini)
@@ -74,7 +76,7 @@ cd executables\exe_ls
 .\build.bat
 ```
 
-Binaries are installed to `c:\Users\andre\bin\`, which should be on your `PATH`.
+Binaries are compiled to the project root (two levels above each `exe_<tool>` directory). Place them in a directory on your `PATH`.
 
 ### First Usage
 ```powershell

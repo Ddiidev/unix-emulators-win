@@ -2,7 +2,7 @@ module tests
 
 import os
 
-const exe_path = os.join_path('c:', 'Users', 'andre', 'bin', 'mkdir.exe')
+const exe_path = os.join_path(os.dir(@FILE), '..', '..', '..', 'mkdir.exe')
 
 fn test_mkdir_basic() {
 	os.rmdir_all('test_dir') or { }

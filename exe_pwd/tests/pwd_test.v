@@ -2,7 +2,7 @@ module tests
 
 import os
 
-const exe_path = os.join_path('c:', 'Users', 'andre', 'bin', 'pwd.exe')
+const exe_path = os.join_path(os.dir(@FILE), '..', '..', '..', 'pwd.exe')
 
 fn test_pwd() {
 	res := os.execute('${exe_path}')
