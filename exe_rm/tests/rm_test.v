@@ -5,18 +5,18 @@ import os
 const exe_path = os.join_path(os.dir(@FILE), '..', '..', '..', 'rm.exe')
 
 fn test_rm_file() {
-	os.write_file('temp.txt', 'test') or { }
-	res := os.execute('${exe_path} temp.txt')
+	os.write_file('rm_temp.txt', 'test') or { }
+	res := os.execute('${exe_path} rm_temp.txt')
 	assert res.exit_code == 0
-	assert !os.exists('temp.txt')
+	assert !os.exists('rm_temp.txt')
 }
 
 fn test_rm_recursive() {
-	os.mkdir_all('temp_dir/a/b') or { }
-	os.write_file('temp_dir/a/b/file.txt', 'test') or { }
-	res := os.execute('${exe_path} -r temp_dir')
+	os.mkdir_all('rm_temp_dir/a/b') or { }
+	os.write_file('rm_temp_dir/a/b/file.txt', 'test') or { }
+	res := os.execute('${exe_path} -r rm_temp_dir')
 	assert res.exit_code == 0
-	assert !os.exists('temp_dir')
+	assert !os.exists('rm_temp_dir')
 }
 
 fn test_rm_force() {

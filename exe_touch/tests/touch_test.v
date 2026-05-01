@@ -6,30 +6,30 @@ import time
 const exe_path = os.join_path(os.dir(@FILE), '..', '..', '..', 'touch.exe')
 
 fn test_touch_create() {
-	os.rm('new_file.txt') or { }
-	res := os.execute('${exe_path} new_file.txt')
+	os.rm('touch_new_file.txt') or { }
+	res := os.execute('${exe_path} touch_new_file.txt')
 	assert res.exit_code == 0
-	assert os.exists('new_file.txt')
-	os.rm('new_file.txt') or { }
+	assert os.exists('touch_new_file.txt')
+	os.rm('touch_new_file.txt') or { }
 }
 
 fn test_touch_update() {
-	os.write_file('existing.txt', 'test') or { }
+	os.write_file('touch_existing.txt', 'test') or { }
 	// Wait a bit to ensure timestamp changes
 	time.sleep(1100 * time.millisecond) 
 	
-	old_time := os.file_last_mod_unix('existing.txt')
-	res := os.execute('${exe_path} existing.txt')
+	old_time := os.file_last_mod_unix('touch_existing.txt')
+	res := os.execute('${exe_path} touch_existing.txt')
 	assert res.exit_code == 0
 	
-	new_time := os.file_last_mod_unix('existing.txt')
+	new_time := os.file_last_mod_unix('touch_existing.txt')
 	assert new_time > old_time
-	os.rm('existing.txt') or { }
+	os.rm('touch_existing.txt') or { }
 }
 
 fn test_touch_no_create() {
-	os.rm('no_create.txt') or { }
-	res := os.execute('${exe_path} -c no_create.txt')
+	os.rm('touch_no_create.txt') or { }
+	res := os.execute('${exe_path} -c touch_no_create.txt')
 	assert res.exit_code == 0
-	assert !os.exists('no_create.txt')
+	assert !os.exists('touch_no_create.txt')
 }

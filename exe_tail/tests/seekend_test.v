@@ -53,8 +53,8 @@ fn test_tail_verbose_quiet() {
 	assert res2.output.contains('==>')
 	
 	// Quiet: suppress header even for multiple files
-	os.write_file('temp2.txt', 'a\n') or {}
-	res3 := os.execute('${exe_path} -q -n 1 ${test_file} temp2.txt')
+	os.write_file('tail_seekend_temp2.txt', 'a\n') or {}
+	res3 := os.execute('${exe_path} -q -n 1 ${test_file} tail_seekend_temp2.txt')
 	assert !res3.output.contains('==>')
-	os.rm('temp2.txt') or {}
+	os.rm('tail_seekend_temp2.txt') or {}
 }

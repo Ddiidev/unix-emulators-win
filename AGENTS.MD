@@ -14,6 +14,7 @@ Each folder contains an integration test suite in the `tests/` directory, which 
 - **Changes to existing behavior or internal flows** MUST add or update tests to cover the modified code path. If the change alters how something already worked, update the relevant existing test file rather than creating a new one.
 - Tests are black-box integration tests: compile the binary with `v -prod`, then call it via `os.execute()` and assert exit codes and stdout content.
 - Run `v test tests/` in the executable's source directory after every change to confirm nothing is broken.
+- **CRITICAL: Temp file names must be unique per test file.** Tests run in parallel via `v test .` (12 jobs). Using generic names like `temp.txt` causes race conditions where parallel tests clobber each other's files. Always prefix temp files with the tool name (e.g., `sort_temp.txt`, `head_temp.txt`, `rm_temp_dir`).
 
 ## Deployment
 Binaries are compiled into the project root (`../../<tool>.exe` relative to each `exe_<tool>` directory). Add this directory to your Windows `PATH`.
