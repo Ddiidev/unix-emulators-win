@@ -8,7 +8,7 @@ const exe_path = os.join_path(os.dir(@FILE), '..', '..', '..', 'touch.exe')
 fn test_setup() {
 	os.write_file('touch_test.txt', 'test') or { }
 	// Voltar no tempo para termos uma diferença clara
-	old_time := time.now().unix() - 86400 // -1 dia
+	old_time := int(time.now().unix() - 86400) // -1 day
 	os.utime('touch_test.txt', old_time, old_time) or { }
 }
 

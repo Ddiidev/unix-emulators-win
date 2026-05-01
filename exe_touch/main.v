@@ -35,15 +35,15 @@ fn main() {
 	mut exit_code := 0
 	for f in files {
 		if os.exists(f) {
-			now := time.now().unix()
+			now := int(time.now().unix())
 			stat := os.stat(f) or {
 				eprintln("touch: cannot touch '${f}': ${err}")
 				exit_code = 1
 				continue
 			}
 			
-			atime := if mod_only && !access_only { stat.atime } else { now }
-			mtime := if access_only && !mod_only { stat.mtime } else { now }
+			atime := if mod_only && !access_only { int(stat.atime) } else { now }
+			mtime := if access_only && !mod_only { int(stat.mtime) } else { now }
 			
 			os.utime(f, atime, mtime) or {
 				eprintln("touch: cannot touch '${f}': ${err}")
