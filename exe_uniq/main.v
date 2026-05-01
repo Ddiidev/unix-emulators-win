@@ -85,8 +85,9 @@ fn print_uniq(line string, n int, show_count bool, repeated bool, unique bool) {
 	if repeated && n == 1 { return }
 	if unique && n > 1 { return }
 	
+	mut text := line.trim_right('\r\n')
 	if show_count {
 		print('${n:7} ')
 	}
-	print(line)
+	println(text)
 }
