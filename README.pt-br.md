@@ -493,35 +493,17 @@ v -o "..\..\ls.exe" .
 
 ## RTK no Windows — Template de Prompt
 
-Inclua isto no system prompt do seu agente para forçar o uso eficiente dessas ferramentas através do [rtk](https://github.com/rtk-ai/rtk/):
+Para obter o máximo dessas ferramentas com o [rtk](https://github.com/rtk-ai/rtk/), use o system prompt disponível em **[AGENTS_SUGGESTION_FOR_RTK.md](AGENTS_SUGGESTION_FOR_RTK.md)**. Ele impõe:
 
-```
-## RTK on Windows
-**MANDATORY**: Use `rtk` wrappers for CLI operations on Windows.
-**FORBIDDEN**: Do not use native PowerShell cmdlets for file/text operations (`Select-String`, `Get-Content`, `Get-ChildItem`, `sls`, `gc`, `gci`). Use `rtk grep`, `rtk cat`, `rtk ls`, `rtk findd`, etc.
+- Uso **OBRIGATÓRIO** de wrappers `rtk` para operações CLI no Windows
+- Uso **PROIBIDO** de cmdlets nativos do PowerShell (`Select-String`, `Get-Content`, `Get-ChildItem`) para operações de arquivo/texto
+- Pipelines curtos estilo UNIX com `rtk grep ... | rtk head ...`
+- Caminhos/extensões direcionados em vez de scans recursivos amplos a partir de `.`
+- `findd | xargs grep` para filtrar por diretório e tipo antes de executar `grep`
+- Exclusão automática de binários, `node_modules`, `.git`, `build/`, `dist/`, etc.
+- Exclusão automática de extensões binárias: `*.exe`, `*.dll`, `*.sqlite`, `*.png`, `*.pdf`, `*.zip`, etc.
 
-- Start with `rtk`; if it fails, retry with another `rtk` approach first.
-- The next command starts with `rtk` again. Fall back to native Windows only when `rtk` keeps failing for that specific case.
-- If the user says "no rtk", do not use it.
-- Prefer short Unix-style pipelines with `rtk`, e.g. `rtk grep ... | rtk head ...`.
-- Use `findd` under `rtk` on Windows-unix-like environments.
-- Prefer targeted paths/extensions over broad recursive scans from `.`.
-- Prefer `findd | xargs grep` when it can narrow by directory and file type before running `grep`.
-- Do not read, grep, cat, or recurse into binary files unless explicitly asked.
-- Treat `.dll`, `.so`, `.exe`, `.sqlite`, `.db`, `.bin`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, `.pdf`, `.zip`, `.woff`, `.woff2`, `.ttf`, and similar files as binary by default.
-- For recursive `grep`, always use `--exclude-dir` for dependency/build/cache/generated/VCS folders: `.git`, `node_modules`, `bin`, `obj`, `dist`, `build`, `out`, `coverage`, `.next`, `.nuxt`, `.svelte-kit`, `.vite`, `target`, `vendor`, `.cache`, `tmp`, `temp`, `logs`, `.venv`, `venv`, `__pycache__`, `.pytest_cache`, `.mypy_cache`, `.gradle`.
-- For recursive `grep`, always use `--exclude` for binary/large generated extensions: `*.dll`, `*.so`, `*.exe`, `*.sqlite`, `*.db`, `*.bin`, `*.png`, `*.jpg`, `*.jpeg`, `*.gif`, `*.webp`, `*.pdf`, `*.zip`, `*.woff`, `*.woff2`, `*.ttf`.
-
-Examples:
-- `rtk git status --short --branch`
-- `rtk git diff --stat`
-- `rtk ls -la`
-- `rtk grep -n "padrão" caminho`
-- `rtk cat caminho/para/arquivo`
-- `rtk findd . -iname AGENTS.md -o -iname "*_AGENTS.md" -o -iname "AGENTS_*.md"`
-- `rtk findd repository entities -name "*.v" | xargs grep -E "padrão" | head -n 200`
-- `rtk grep -RniE "padrão1|padrão2" . --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=bin --exclude-dir=obj --exclude-dir=dist --exclude-dir=build --exclude=*.dll --exclude=*.so --exclude=*.exe --exclude=*.sqlite --exclude=*.db --exclude=*.bin | rtk head -n 200`
-```
+Veja o arquivo para o prompt completo pronto para copiar e exemplos.
 
 > **Por que isso importa**: Cmdlets do PowerShell produzem saída verbosa e formatada como objeto que desperdiça milhares de tokens de IA por chamada. Estas ferramentas estilo UNIX produzem texto plano e denso — um único `rtk grep ... | rtk head -n 80` pode substituir uma saída de 200 linhas do PowerShell por 3-5 linhas que o LLM consome instantaneamente.
 

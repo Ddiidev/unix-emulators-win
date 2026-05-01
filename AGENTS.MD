@@ -5,7 +5,7 @@ This directory contains implementations of standard UNIX utilities written in th
 ## Purpose
 The primary purpose is to provide these executables for [rtk](https://github.com/rtk-ai/rtk/), an AI proxy that bridges UNIX shell commands to Windows. Because Windows lacks native commands like `ls`, and aliases or PowerShell emulations are often insufficient for external programs calling standard executables, these standalone binaries bridge that gap.
 
-**Token economy**: These tools produce dense UNIX-style plain-text output, avoiding the verbose object-formatted output of PowerShell cmdlets (`Select-String`, `Get-ChildItem`, etc.). This saves thousands of AI tokens per CLI call — a single `rtk grep ... | rtk head -n 80` replaces a 200-line PowerShell dump with 3-5 lines the LLM consumes instantly.
+See [AGENTS_SUGGESTION_FOR_RTK.md](AGENTS_SUGGESTION_FOR_RTK.md) for the recommended agent prompt template that enforces efficient use of these tools through rtk.
 
 ## Structure
 By convention, each executable's source code is placed in its own folder named `exe_<command>` (e.g., `exe_ls`). 
