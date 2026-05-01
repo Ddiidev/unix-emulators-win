@@ -21,7 +21,7 @@ fn test_grep_only_matching() {
 	
 	res := os.execute('${exe_path} --color=never -o match grep_newflags_dir/file1.txt')
 	assert res.exit_code == 0
-	lines := res.output.trim_space().split('\n')
+	lines := res.output.trim_space().split_into_lines()
 	assert lines.len == 2
 	assert lines[0].trim_space() == 'match'
 	assert lines[1].trim_space() == 'match'

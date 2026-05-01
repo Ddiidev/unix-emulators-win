@@ -19,7 +19,7 @@ fn test_uniq_case_sensitive_default() {
 	// Default diferencia maiúsculas de minúsculas
 	res := os.execute('${exe_path} uniq_case_test.txt')
 	assert res.exit_code == 0
-	lines := res.output.trim_space().split('\n')
+	lines := res.output.trim_space().split_into_lines()
 	assert lines.len == 5 // Nenhuma linha é removida
 }
 

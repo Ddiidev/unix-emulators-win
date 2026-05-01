@@ -21,7 +21,7 @@ fn test_ls_natural_sort() {
 	
 	res := os.execute('${exe_path} -v -1 ls_natural_test_dir')
 	assert res.exit_code == 0
-	lines := res.output.trim_space().split('\n')
+	lines := res.output.trim_space().split_into_lines()
 	
 	// Deve ser: file1.txt, file2.txt, file10.txt
 	assert lines.len >= 3
