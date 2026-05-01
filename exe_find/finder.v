@@ -1,13 +1,18 @@
 module main
 
 import os
-import regex
 
 struct CompiledFilter {
 mut:
 	filter   Filter
-	name_re  ?regex.RE
-	iname_re ?regex.RE
+	name_re  ?CompiledGlob
+	iname_re ?CompiledGlob
+}
+
+struct CompiledGlob {
+	raw  string
+	case_ins bool
+	is_regex  bool
 }
 
 fn compile_filters(filters []Filter) []CompiledFilter {
@@ -27,31 +32,72 @@ fn compile_filters(filters []Filter) []CompiledFilter {
 	return result
 }
 
-fn compile_glob(pattern_str string, case_ins bool) ?regex.RE {
-	mut p := pattern_str.replace('.', '\\.').replace('*', '.*').replace('?', '.')
-	if !p.starts_with('^') {
-		p = '^' + p
-	}
-	if !p.ends_with('$') {
-		p = p + '$'
-	}
-	mut re := regex.regex_opt(p) or { return none }
+fn compile_glob(pattern_str string, case_ins bool) ?CompiledGlob {
+	mut raw := pattern_str
 	if case_ins {
-		re.flag |= regex.f_ci
+		raw = pattern_str.to_lower()
 	}
-	return re
+	is_lit := !raw.contains('*') && !raw.contains('?')
+	return CompiledGlob{
+		raw: raw
+		case_ins: case_ins
+		is_regex: !is_lit
+	}
 }
 
-fn match_name_compiled(name string, re_opt ?regex.RE) bool {
-	mut re := re_opt or { return true }
-	return re.matches_string(name)
+fn match_glob(name string, cg ?CompiledGlob) bool {
+	cg2 := cg or { return true }
+	if !cg2.is_regex {
+		target := if cg2.case_ins { name.to_lower() } else { name }
+		return target == cg2.raw
+	}
+	return match_glob_pattern(name, cg2)
+}
+
+fn match_glob_pattern(name string, cg CompiledGlob) bool {
+	target := if cg.case_ins { name.to_lower() } else { name }
+	pattern := cg.raw
+	return glob_match(target, pattern, 0, 0)
+}
+
+fn glob_match(s string, p string, si int, pi int) bool {
+	mut s_idx := si
+	mut p_idx := pi
+
+	for p_idx < p.len {
+		if p[p_idx] == `*` {
+			for p_idx < p.len && p[p_idx] == `*` {
+				p_idx++
+			}
+			if p_idx == p.len {
+				return true
+			}
+			for s_idx < s.len {
+				if glob_match(s, p, s_idx, p_idx) {
+					return true
+				}
+				s_idx++
+			}
+			return false
+		}
+		if s_idx >= s.len {
+			return false
+		}
+		if p[p_idx] == `?` || s[s_idx] == p[p_idx] {
+			s_idx++
+			p_idx++
+			continue
+		}
+		return false
+	}
+	return s_idx == s.len
 }
 
 fn matches_filter_compiled(item string, full_path string, cf CompiledFilter) bool {
-	if cf.filter.name != '' && !match_name_compiled(item, cf.name_re) {
+	if cf.filter.name != '' && !match_glob(item, cf.name_re) {
 		return false
 	}
-	if cf.filter.iname != '' && !match_name_compiled(item, cf.iname_re) {
+	if cf.filter.iname != '' && !match_glob(item, cf.iname_re) {
 		return false
 	}
 	if cf.filter.typ != '' {

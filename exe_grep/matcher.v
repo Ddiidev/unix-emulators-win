@@ -39,9 +39,6 @@ fn build_fixed_matcher(pattern string, opts Options) Matcher {
 }
 
 pub fn new_matcher(pattern string, opts Options) !Matcher {
-	// Auto-detect literal patterns: if the input contains no regex meta-characters
-	// AND no word/line anchors are requested, treat as fixed-string to avoid the
-	// expensive NFA-based regex engine entirely.
 	literal := is_literal_pattern(pattern) && !opts.word_regexp && !opts.line_regexp
 	if opts.fixed_strings || literal {
 		return build_fixed_matcher(pattern, opts)
@@ -50,12 +47,12 @@ pub fn new_matcher(pattern string, opts Options) !Matcher {
 	mut pat := pattern
 	if opts.word_regexp { pat = '\\b' + pat + '\\b' }
 	if opts.line_regexp { pat = '^' + pat + '$' }
+	if opts.ignore_case {
+		pat = '(?i)' + pat
+	}
 
 	mut re := regex.regex_opt(pat) or {
 		return error("grep: invalid regular expression: ${err.msg()}")
-	}
-	if opts.ignore_case {
-		re.flag |= regex.f_ci
 	}
 
 	return Matcher{
