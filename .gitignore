@@ -1,0 +1,41 @@
+# Binary outputs
+*.exe
+*.dll
+*.so
+*.dylib
+
+# V compiler artifacts
+*.o
+*.obj
+*.tmp
+.cache/
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# OS junk
+Thumbs.db
+Desktop.ini
+
+# Temporary test directories created by integration tests
+test_grep_*/
+test_ls_*/
+test_cat_*/
+test_cp_*/
+test_rm_*/
+test_mv_*/
+test_mkdir_*/
+test_touch_*/
+test_find_*/
+test_sort_*/
+test_uniq_*/
+test_tail_*/
+test_head_*/
+test_which_*/
+test_pwd_*/
+test_xargs_*/
+test_regex_data/
+test_grep_data.txt
+test_grep_excludes/
+test_mkdir/
