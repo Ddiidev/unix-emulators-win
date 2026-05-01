@@ -3,7 +3,9 @@
 This directory contains implementations of standard UNIX utilities written in the [V programming language](https://vlang.io/).
 
 ## Purpose
-The primary purpose is to provide these executables for tools that rely on UNIX shell syntax or commands, specifically **rtk (AI proxy)**. Because Windows lacks native commands like `ls`, and aliases or PowerShell emulations are often insufficient for external programs calling standard executables, these standalone binaries bridge that gap.
+The primary purpose is to provide these executables for [rtk](https://github.com/rtk-ai/rtk/), an AI proxy that bridges UNIX shell commands to Windows. Because Windows lacks native commands like `ls`, and aliases or PowerShell emulations are often insufficient for external programs calling standard executables, these standalone binaries bridge that gap.
+
+**Token economy**: These tools produce dense UNIX-style plain-text output, avoiding the verbose object-formatted output of PowerShell cmdlets (`Select-String`, `Get-ChildItem`, etc.). This saves thousands of AI tokens per CLI call — a single `rtk grep ... | rtk head -n 80` replaces a 200-line PowerShell dump with 3-5 lines the LLM consumes instantly.
 
 ## Structure
 By convention, each executable's source code is placed in its own folder named `exe_<command>` (e.g., `exe_ls`). 

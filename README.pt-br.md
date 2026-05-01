@@ -25,17 +25,33 @@
 - [Testes](#testes)
 - [Arquitetura](#arquitetura)
 - [Compilação](#compilação)
+- [RTK no Windows — Template de Prompt](#rtk-no-windows--template-de-prompt)
 
 ---
 
 ## Por Que Isso Existe
 
-O Windows não tem equivalentes nativos dos comandos UNIX padrão (`ls`, `grep`, `find`, etc.). Embora o PowerShell ofereça aliases, eles são incompatíveis com programas externos que esperam executáveis reais no `PATH`. Este projeto fornece **binários `.exe` independentes** que:
+O Windows não tem equivalentes nativos dos comandos UNIX padrão (`ls`, `grep`, `find`, etc.). Embora o PowerShell ofereça aliases, eles são incompatíveis com programas externos que esperam executáveis reais no `PATH`.
+
+### Construído para o [rtk](https://github.com/rtk-ai/rtk/)
+
+A motivação principal é **economia de tokens para agentes de IA**. Quando um LLM chama cmdlets do PowerShell como `Select-String` ou `Get-ChildItem`, a saída é verbosa, formatada como objeto, e frequentemente centenas de linhas. Isso desperdiça milhares de tokens por chamada — tokens pelos quais você paga.
+
+Estes executáveis produzem **saída de texto plano densa, estilo UNIX**, consumível em uma única olhada. Em par com o [rtk](https://github.com/rtk-ai/rtk/) (proxy de IA), permitem que agentes executem operações CLI com pipelines curtos como:
+
+```bash
+rtk grep -n "padrão" caminho | rtk head -n 80
+rtk findd ./src -name "*.ts" | xargs grep "TODO" | rtk head -n 200
+```
+
+Os binários:
 
 1. **Funcionam como executáveis reais** — podem ser chamados de qualquer shell, script ou ferramenta externa (ex: `rtk`, agentes de IA como Codex/Gemini)
 2. **Retornam códigos de saída POSIX** — `0` para sucesso, `1` para nenhuma correspondência/erro, `2` para erros de uso
 3. **Suportam flags comuns do GNU/UNIX** — implementando progressivamente as flags mais usadas
 4. **Tratam caminhos do Windows** — normalização de barras invertidas e barras comuns, suporte a `PATHEXT`
+5. **Excluem diretórios ruidosos automaticamente** — `node_modules`, `.git`, `vendor`, etc. são ignorados por padrão em scans recursivos
+6. **Detectam padrões literais automaticamente** — o grep evita o engine de regex quando o padrão não tem meta-caracteres, reduzindo RAM de GBs para MBs
 
 ---
 
@@ -472,6 +488,42 @@ cd executables
 cd executables\exe_ls
 v -o "..\..\ls.exe" .
 ```
+
+---
+
+## RTK no Windows — Template de Prompt
+
+Inclua isto no system prompt do seu agente para forçar o uso eficiente dessas ferramentas através do [rtk](https://github.com/rtk-ai/rtk/):
+
+```
+## RTK on Windows
+**MANDATORY**: Use `rtk` wrappers for CLI operations on Windows.
+**FORBIDDEN**: Do not use native PowerShell cmdlets for file/text operations (`Select-String`, `Get-Content`, `Get-ChildItem`, `sls`, `gc`, `gci`). Use `rtk grep`, `rtk cat`, `rtk ls`, `rtk findd`, etc.
+
+- Start with `rtk`; if it fails, retry with another `rtk` approach first.
+- The next command starts with `rtk` again. Fall back to native Windows only when `rtk` keeps failing for that specific case.
+- If the user says "no rtk", do not use it.
+- Prefer short Unix-style pipelines with `rtk`, e.g. `rtk grep ... | rtk head ...`.
+- Use `findd` under `rtk` on Windows-unix-like environments.
+- Prefer targeted paths/extensions over broad recursive scans from `.`.
+- Prefer `findd | xargs grep` when it can narrow by directory and file type before running `grep`.
+- Do not read, grep, cat, or recurse into binary files unless explicitly asked.
+- Treat `.dll`, `.so`, `.exe`, `.sqlite`, `.db`, `.bin`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, `.pdf`, `.zip`, `.woff`, `.woff2`, `.ttf`, and similar files as binary by default.
+- For recursive `grep`, always use `--exclude-dir` for dependency/build/cache/generated/VCS folders: `.git`, `node_modules`, `bin`, `obj`, `dist`, `build`, `out`, `coverage`, `.next`, `.nuxt`, `.svelte-kit`, `.vite`, `target`, `vendor`, `.cache`, `tmp`, `temp`, `logs`, `.venv`, `venv`, `__pycache__`, `.pytest_cache`, `.mypy_cache`, `.gradle`.
+- For recursive `grep`, always use `--exclude` for binary/large generated extensions: `*.dll`, `*.so`, `*.exe`, `*.sqlite`, `*.db`, `*.bin`, `*.png`, `*.jpg`, `*.jpeg`, `*.gif`, `*.webp`, `*.pdf`, `*.zip`, `*.woff`, `*.woff2`, `*.ttf`.
+
+Examples:
+- `rtk git status --short --branch`
+- `rtk git diff --stat`
+- `rtk ls -la`
+- `rtk grep -n "padrão" caminho`
+- `rtk cat caminho/para/arquivo`
+- `rtk findd . -iname AGENTS.md -o -iname "*_AGENTS.md" -o -iname "AGENTS_*.md"`
+- `rtk findd repository entities -name "*.v" | xargs grep -E "padrão" | head -n 200`
+- `rtk grep -RniE "padrão1|padrão2" . --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=bin --exclude-dir=obj --exclude-dir=dist --exclude-dir=build --exclude=*.dll --exclude=*.so --exclude=*.exe --exclude=*.sqlite --exclude=*.db --exclude=*.bin | rtk head -n 200`
+```
+
+> **Por que isso importa**: Cmdlets do PowerShell produzem saída verbosa e formatada como objeto que desperdiça milhares de tokens de IA por chamada. Estas ferramentas estilo UNIX produzem texto plano e denso — um único `rtk grep ... | rtk head -n 80` pode substituir uma saída de 200 linhas do PowerShell por 3-5 linhas que o LLM consome instantaneamente.
 
 ---
 
