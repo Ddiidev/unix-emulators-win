@@ -29,7 +29,7 @@ fn test_uniq_ignore_case() {
 	
 	res := os.execute('${exe_path} -i uniq_case_test.txt')
 	assert res.exit_code == 0
-	lines := res.output.trim_space().split('\n')
+	lines := res.output.trim_space().split_into_lines()
 	
 	// Deve manter apenas o primeiro "Line" e o primeiro "Other"
 	assert lines.len == 2
