@@ -1,5 +1,8 @@
 name: Build and Release
 
+permissions:
+  contents: write
+
 on:
   push:
     tags:
@@ -10,8 +13,6 @@ jobs:
   build:
     runs-on: windows-latest
     name: Build 16 UNIX tools for Windows
-    permissions:
-      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
