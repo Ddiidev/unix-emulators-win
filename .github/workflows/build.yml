@@ -62,21 +62,6 @@ jobs:
           v --version
           v doctor
 
-      - name: Build all tools
-        shell: pwsh
-        run: |
-          Get-ChildItem -Directory -Filter 'exe_*' | Sort-Object Name | ForEach-Object {
-            $buildBat = Join-Path $_.FullName 'build.bat'
-            if (-not (Test-Path $buildBat)) {
-              Write-Warning "Skipping $($_.Name): build.bat not found"
-              return
-            }
-            Write-Host "Building $($_.Name)..."
-            & $buildBat
-            if ($LASTEXITCODE -ne 0) { throw "Build failed for $($_.Name)" }
-          }
-          Write-Host "All 16 tools built successfully."
-
       - name: Run all test suites
         shell: pwsh
         run: |
@@ -94,6 +79,21 @@ jobs:
             throw "Tests failed for: $($failed -join ', ')"
           }
           Write-Host "All test suites passed."
+
+      - name: Build all tools
+        shell: pwsh
+        run: |
+          Get-ChildItem -Directory -Filter 'exe_*' | Sort-Object Name | ForEach-Object {
+            $buildBat = Join-Path $_.FullName 'build.bat'
+            if (-not (Test-Path $buildBat)) {
+              Write-Warning "Skipping $($_.Name): build.bat not found"
+              return
+            }
+            Write-Host "Building $($_.Name)..."
+            & $buildBat
+            if ($LASTEXITCODE -ne 0) { throw "Build failed for $($_.Name)" }
+          }
+          Write-Host "All 16 tools built successfully."
 
       - name: Collect binaries
         shell: pwsh
