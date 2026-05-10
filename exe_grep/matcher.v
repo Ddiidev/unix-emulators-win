@@ -38,26 +38,77 @@ fn build_fixed_matcher(pattern string, opts Options) Matcher {
 	}
 }
 
+// split_toplevel_alt splits a regex pattern on top-level '|' characters,
+// respecting escape sequences and bracket groups ([], ()).
+fn split_toplevel_alt(pattern string) []string {
+	mut parts := []string{}
+	mut current := []u8{}
+	mut depth_paren := 0
+	mut in_bracket := false
+	mut i := 0
+	bytes := pattern.bytes()
+	for i < bytes.len {
+		c := bytes[i]
+		if c == `\\` && i + 1 < bytes.len {
+			// escaped character — consume both and skip
+			current << c
+			current << bytes[i + 1]
+			i += 2
+			continue
+		}
+		if !in_bracket {
+			if c == `[` {
+				in_bracket = true
+			} else if c == `(` {
+				depth_paren++
+			} else if c == `)` && depth_paren > 0 {
+				depth_paren--
+			} else if c == `|` && depth_paren == 0 {
+				parts << current.bytestr()
+				current.clear()
+				i++
+				continue
+			}
+		} else if c == `]` {
+			in_bracket = false
+		}
+		current << c
+		i++
+	}
+	parts << current.bytestr()
+	return parts
+}
+
 pub fn new_matcher(pattern string, opts Options) !Matcher {
 	literal := is_literal_pattern(pattern) && !opts.word_regexp && !opts.line_regexp
 	if opts.fixed_strings || literal {
 		return build_fixed_matcher(pattern, opts)
 	}
 
-	mut pat := pattern
-	if opts.word_regexp { pat = '\\b' + pat + '\\b' }
-	if opts.line_regexp { pat = '^' + pat + '$' }
-	if opts.ignore_case {
-		pat = '(?i)' + pat
-	}
+	// V's regex module treats '|' at the token level (not full alternation
+	// like PCRE/ERE).  Work around this by splitting on top-level '|' and
+	// compiling each alternative as a separate RE.
+	alternatives := split_toplevel_alt(pattern)
 
-	mut re := regex.regex_opt(pat) or {
-		return error("grep: invalid regular expression: ${err.msg()}")
+	mut compiled := []regex.RE{cap: alternatives.len}
+	mut pats := []string{cap: alternatives.len}
+	for alt in alternatives {
+		mut pat := alt
+		if opts.word_regexp { pat = '\\b' + pat + '\\b' }
+		if opts.line_regexp { pat = '^' + pat + '$' }
+		mut re := regex.regex_opt(pat) or {
+			return error("grep: invalid regular expression: ${err.msg()}")
+		}
+		if opts.ignore_case {
+			re.flag |= regex.f_ci
+		}
+		compiled << re
+		pats << pat
 	}
 
 	return Matcher{
-		res: [re]
-		patterns: [pat]
+		res: compiled
+		patterns: pats
 		fixed: false
 		case_ins: opts.ignore_case
 	}

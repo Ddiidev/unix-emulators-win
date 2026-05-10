@@ -31,6 +31,9 @@ fn main() {
 	opts.word_regexp = fp.bool('word-regexp', `w`, false, 'force PATTERN to match only whole words')
 	opts.line_regexp = fp.bool('line-regexp', `x`, false, 'force PATTERN to match only whole lines')
 	opts.fixed_strings = fp.bool('fixed-strings', `F`, false, 'interpret PATTERN as a fixed string')
+	// -E / -G: accepted for GNU grep compatibility (no-op — we already use ERE semantics)
+	fp.bool('extended-regexp', `E`, false, 'interpret PATTERN as an extended regular expression (default)')
+	fp.bool('basic-regexp', `G`, false, 'interpret PATTERN as a basic regular expression')
 	opts.only_matching = fp.bool('only-matching', `o`, false, 'show only the matching part of lines')
 	
 	opts.no_filename = fp.bool('no-filename', `h`, false, 'suppress the file name prefix on output')
