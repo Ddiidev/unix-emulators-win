@@ -45,12 +45,15 @@ fn main() {
 		if f_path == '-' {
 			mut stdin := os.stdin()
 			for {
-				n := stdin.read_bytes_with_newline(mut buf) or { 0 }
+				n := stdin.read_bytes_with_newline(mut buf) or { break }
 				if n == 0 {
-					if stdin.eof() { break }
-					continue
+					break
 				}
-				all_lines << buf[..n].bytestr()
+				mut s := buf[..n].bytestr()
+				if s.len > 0 && s[s.len - 1] == `\r` {
+					s = s[..s.len - 1]
+				}
+				all_lines << s
 			}
 		} else {
 			lines := os.read_lines(f_path) or { 
@@ -58,7 +61,13 @@ fn main() {
 				exit_code = 1
 				continue 
 			}
-			for l in lines { all_lines << l + '\n' }
+			for l in lines {
+				mut line := l
+				if line.len > 0 && line[line.len - 1] == `\r` {
+					line = line[..line.len - 1]
+				}
+				all_lines << line + '\n'
+			}
 		}
 	}
 

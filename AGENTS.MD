@@ -28,7 +28,7 @@ For any argument that is not yet implemented, the tools return a standardized er
 
 - `ls` (implemented in `exe_ls`) - Comprehensive GNU/UNIX compatible version. Supports `-a`, `-l`, `-h`, `-R`, `-S`, `-t`, `-v` (natural sort), `-F`, `-1`, `-m`, `-d`, `--color`, `--group-directories-first`, and many more.
 - `cat` (implemented in `exe_cat`) - Supports numbering (`-n`, `-b`), squeezing (`-s`), show-ends (`-E`), show-tabs (`-T`), and `-A` (show-all).
-- `grep` (implemented in `exe_grep`) - Regex search with colors, recursion (`-r`/`-R`), context (`-A`/`-B`/`-C`), fixed strings (`-F`), only-matching (`-o`), max-count (`-m`), `--include`/`--exclude`/`--exclude-dir`, and `-L` (files-without-match).
+- `grep` (implemented in `exe_grep`) - Regex search with colors, recursion (`-r`/`-R`), context (`-A`/`-B`/`-C`), fixed strings (`-F`), only-matching (`-o`), max-count (`-m`), `--include`/`--exclude`/`--exclude-dir`, `-L` (files-without-match), and `-i` (ignore-case).
 - `rm` (implemented in `exe_rm`) - Recursive (`-r`), force (`-f`), interactive (`-i`), verbose (`-v`), and empty-dir (`-d`) removal.
 - `mkdir` (implemented in `exe_mkdir`) - Supports parent directory creation (`-p`) and verbose (`-v`).
 - `touch` (implemented in `exe_touch`) - Creates files, updates timestamps, supports `-c` (no-create), `-a` (access-time only), `-m` (modification-time only).
@@ -39,6 +39,6 @@ For any argument that is not yet implemented, the tools return a standardized er
 - `which` (implemented in `exe_which`) - Locate a command on PATH, supports `-a` (all matches). Respects PATHEXT on Windows.
 - `head` (implemented in `exe_head`) - Output first part of files with `-n` (lines), `-c` (bytes), `-v`/`-q` (headers).
 - `tail` (implemented in `exe_tail`) - Output last part of files with `-n`, `-f` (follow), `-s` (sleep interval), `-v`/`-q`. Uses seek-from-end for large file support.
-- `sort` (implemented in `exe_sort`) - Sort lines with `-r` (reverse), `-n` (numeric), `-u` (unique).
+- `sort` (implemented in `exe_sort`) - Sort lines with `-r` (reverse), `-n` (numeric), `-u` (unique), and stdin pipe support.
 - `uniq` (implemented in `exe_uniq`) - Filter adjacent duplicates with `-c` (count), `-d` (repeated), `-u` (unique), `-i` (ignore-case).
 - `xargs` (implemented in `exe_xargs`) - Build commands from stdin with `-0` (NUL separator), `-I` (replace string), `-n` (max args), `-t` (verbose), `-r` (no-run-if-empty).
