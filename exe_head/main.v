@@ -3,10 +3,25 @@ module main
 import os
 import flag
 
+// preprocess_args rewrites shorthand -N (e.g. -30) into -n N
+// so the flag parser can handle it normally.
+fn preprocess_args(args []string) []string {
+	mut result := []string{cap: args.len + 1}
+	for arg in args {
+		if arg.len > 1 && arg[0] == `-` && arg[1..].bytes().all(it.is_digit()) {
+			result << '-n'
+			result << arg[1..]
+		} else {
+			result << arg
+		}
+	}
+	return result
+}
+
 fn main() {
-	mut fp := flag.new_flag_parser(os.args.clone())
+	mut fp := flag.new_flag_parser(preprocess_args(os.args))
 	fp.application('head')
-	fp.version('1.1.0')
+	fp.version('1.2.0')
 	fp.description('Output the first part of files.')
 	fp.skip_executable()
 

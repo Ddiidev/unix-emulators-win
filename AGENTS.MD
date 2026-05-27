@@ -37,8 +37,8 @@ For any argument that is not yet implemented, the tools return a standardized er
 - `find` (implemented in `exe_find`) - Search for files with `-name`, `-iname`, `-type`, `-empty`, `-maxdepth`, `-delete`, and `-o` (OR logic). Regex patterns are pre-compiled for performance.
 - `pwd` (implemented in `exe_pwd`) - Print current working directory with forward-slash paths.
 - `which` (implemented in `exe_which`) - Locate a command on PATH, supports `-a` (all matches). Respects PATHEXT on Windows.
-- `head` (implemented in `exe_head`) - Output first part of files with `-n` (lines), `-c` (bytes), `-v`/`-q` (headers).
-- `tail` (implemented in `exe_tail`) - Output last part of files with `-n`, `-f` (follow), `-s` (sleep interval), `-v`/`-q`. Uses seek-from-end for large file support.
+- `head` (implemented in `exe_head`) - Output first part of files with `-n` (lines), `-N` shorthand (e.g. `head -30`), `-c` (bytes), `-v`/`-q` (headers).
+- `tail` (implemented in `exe_tail`) - Output last part of files with `-n`, `-N` shorthand (e.g. `tail -20`), `-f` (follow), `-s` (sleep interval), `-v`/`-q`. Uses seek-from-end for large file support.
 - `sort` (implemented in `exe_sort`) - Sort lines with `-r` (reverse), `-n` (numeric), `-u` (unique), and stdin pipe support.
 - `uniq` (implemented in `exe_uniq`) - Filter adjacent duplicates with `-c` (count), `-d` (repeated), `-u` (unique), `-i` (ignore-case).
 - `xargs` (implemented in `exe_xargs`) - Build commands from stdin with `-0` (NUL separator), `-I` (replace string), `-n` (max args), `-t` (verbose), `-r` (no-run-if-empty).
