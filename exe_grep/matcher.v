@@ -96,11 +96,11 @@ pub fn new_matcher(pattern string, opts Options) !Matcher {
 		mut pat := alt
 		if opts.word_regexp { pat = '\\b' + pat + '\\b' }
 		if opts.line_regexp { pat = '^' + pat + '$' }
+		if opts.ignore_case {
+			pat = '(?i)' + pat
+		}
 		mut re := regex.regex_opt(pat) or {
 			return error("grep: invalid regular expression: ${err.msg()}")
-		}
-		if opts.ignore_case {
-			re.flag |= regex.f_ci
 		}
 		compiled << re
 		pats << pat
